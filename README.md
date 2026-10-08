@@ -51,6 +51,38 @@ Take BountyForge hunting without spinning up your own environment. **[bountyforg
 
 ## Installation
 
+### opencode
+
+```bash
+git clone https://github.com/Gabson0x/bountyforge.git ~/bountyforge
+```
+
+Then register the path in `~/.config/opencode/opencode.json` (or a project's
+`opencode.json`):
+
+```json
+{
+  "skills": { "paths": ["~/bountyforge"] },
+  "references": {
+    "bountyforge": {
+      "path": "~/bountyforge",
+      "description": "BountyForge knowledge base: wiki/ (methodology, trust map, triage), references/ (gates, CVSS, CWE, attack vectors, agent prompts), tools/ (33 engines, 30 runnable), skills/ (29 sub-skills). Use for bug bounty, pentest, smart contract audit, and report-writing questions."
+    }
+  }
+}
+```
+
+Restart opencode — `SKILL.md` files are discovered recursively under
+`skills.paths`, so all 30 skills load (29 sub-skills plus the root
+`SKILL.md`). The `references` entry makes
+`wiki/`, `references/`, and `tools/` reachable through `@bountyforge`.
+
+Optional MCP server for Solidity scanning:
+
+```json
+{ "mcp": { "bug-bounty-intelligence": { "type": "local", "command": ["npx", "-y", "bug-bounty-intelligence-mcp@latest"] } } }
+```
+
 ### Claude Code (terminal)
 
 ```bash
@@ -67,8 +99,21 @@ Start a fresh Claude Code session — skills load at startup.
 
 ### Optional: Bug Bounty Intelligence MCP (smart contract scanning)
 
-For automated Solidity scanning with Al-Mizaan v3 7-gate analysis, add the companion MCP server:
+For automated Solidity scanning with Al-Mizaan v3 7-gate analysis, add the companion MCP server.
 
+**opencode** — add to `opencode.json`:
+```json
+{
+  "mcp": {
+    "bug-bounty-intelligence": {
+      "type": "local",
+      "command": ["npx", "-y", "bug-bounty-intelligence-mcp@latest"]
+    }
+  }
+}
+```
+
+**Claude Code:**
 ```bash
 claude mcp add bug-bounty-intelligence -- npx -y bug-bounty-intelligence-mcp@latest
 ```

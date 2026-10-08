@@ -1,11 +1,11 @@
 ---
 name: web3-solidity-audit-mcp
-description: MCP server integrating Slither + Aderyn + SWC patterns into Claude Code for smart contract auditing. Use when analyzing Solidity files, running DeFi-specific detectors, or generating invariants. 10 MCP tools, 86 SWC detectors, DeFi preset pack, CI/CD workflow.
+description: MCP server integrating Slither + Aderyn + SWC patterns into opencode for smart contract auditing. Use when analyzing Solidity files, running DeFi-specific detectors, or generating invariants. 10 MCP tools, 86 SWC detectors, DeFi preset pack, CI/CD workflow.
 ---
 
 # SOLIDITY AUDIT MCP
 
-Claude-native smart contract scanner with Slither + Aderyn + SWC patterns.
+opencode-native smart contract scanner with Slither + Aderyn + SWC patterns.
 
 See also: [[Web3 Audit]], [[Smart Contract Audit]], [[Web3 Bug Classes]], [[Methodology]]
 
@@ -13,7 +13,7 @@ See also: [[Web3 Audit]], [[Smart Contract Audit]], [[Web3 Bug Classes]], [[Meth
 
 ## WHAT IT IS
 
-An MCP server that gives Claude Code direct access to Slither, Aderyn, Slang AST, SWC pattern matching, and a gas optimizer — all in one unified pipeline with auto-deduplication. Instead of context-switching between tools, you ask Claude to audit a contract and get a merged, severity-sorted report.
+An MCP server that gives the agent direct access to Slither, Aderyn, Slang AST, SWC pattern matching, and a gas optimizer — all in one unified pipeline with auto-deduplication. Instead of context-switching between tools, you ask the agent to audit a contract and get a merged, severity-sorted report.
 
 **Stack:**
 ```
@@ -43,42 +43,53 @@ curl -L https://foundry.paradigm.xyz | bash && foundryup
 cargo install aderyn
 # or: curl -L https://raw.githubusercontent.com/Cyfrin/aderyn/dev/cyfrinup/install | bash
 
-# MCP server
-npm install -g solidity-audit-mcp
-# or: npx solidity-audit-mcp
+# MCP server - build from source.
+# The npm package `solidity-audit-mcp` is a squatted placeholder
+# (0.0.1-security, "Reserved name placeholder. No functionality"), so
+# `npm install -g` / `npx -y solidity-audit-mcp` installs nothing usable.
+git clone https://github.com/mariano-aguero/solidity-audit-mcp.git
+cd solidity-audit-mcp
+npm install && npm run build     # tsc -> dist/index.js
 
 # Optional fuzzers
 brew install echidna    # macOS
 pip install halmos      # symbolic execution
 ```
 
-**Wire into Claude Code** — add to `~/.claude/mcp.json`:
+**Wire into opencode** - add to `opencode.json`, using the absolute path to
+your clone (`npm run build` must have produced `dist/index.js`):
 ```json
 {
-  "mcpServers": {
+  "mcp": {
     "audit": {
-      "command": "npx",
-      "args": ["solidity-audit-mcp"]
+      "type": "local",
+      "command": ["node", "/ABSOLUTE/PATH/solidity-audit-mcp/dist/index.js"]
     }
   }
 }
 ```
-
-**Or project-level** `.mcp.json` in repo root:
+**Or `npm link` the build** (from inside the clone) so the `solidity-audit-mcp`
+bin lands on PATH, then reference it by name:
 ```json
 {
-  "mcpServers": {
+  "mcp": {
     "audit": {
-      "command": "node",
-      "args": ["/path/to/solidity-audit-mcp/dist/index.js"]
+      "type": "local",
+      "command": ["solidity-audit-mcp"]
     }
   }
 }
 ```
+**Or project-level** `.opencode/opencode.json` in repo root — same `command`
+shape as above.
 
-**Docker** (all tools pre-installed):
+**Docker** (no image is published to Docker Hub — build it from your clone;
+mirrors the repo's own `npm run docker:*` scripts):
 ```bash
-docker run -v $(pwd):/contracts solidity-audit-mcp audit /contracts/Token.sol
+cd solidity-audit-mcp
+docker build -f docker/Dockerfile.saas -t solidity-audit-mcp .
+docker run -v /path/to/contracts:/contracts --entrypoint node solidity-audit-mcp dist/cli.js audit /contracts/Token.sol
+# or: docker-compose -f docker/docker-compose.yml run cli
 ```
 
 ---
@@ -254,7 +265,7 @@ front-running-vulnerable → MEDIUM — state change in predictable order
 liquidity-removal-risk   → MEDIUM — LP withdrawal without reserve check
 ```
 
-**Load in Claude Code:**
+**Load in opencode:**
 ```
 analyze_contract("contracts/Vault.sol", analyzers: ["slither", "aderyn"], detectorPreset: "defi")
 ```
@@ -288,7 +299,8 @@ jobs:
           ADERYN_VER=$(curl -sf https://api.github.com/repos/Cyfrin/aderyn/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
           curl -fL "https://github.com/Cyfrin/aderyn/releases/download/${ADERYN_VER}/aderyn-x86_64-unknown-linux-gnu.tar.xz" | tar -xJf - -C /tmp
           sudo install -m 755 /tmp/aderyn /usr/local/bin/aderyn
-          npm install -g solidity-audit-mcp
+          git clone https://github.com/mariano-aguero/solidity-audit-mcp.git "$RUNNER_TEMP/solidity-audit-mcp"
+          cd "$RUNNER_TEMP/solidity-audit-mcp" && npm ci && npm run build && npm link
 
       - name: Audit changed contracts
         run: |
@@ -312,7 +324,7 @@ jobs:
 
 ---
 
-## CLI USAGE (Outside Claude Code)
+## CLI USAGE (Outside the agent)
 
 ```bash
 # Full audit

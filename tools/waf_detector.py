@@ -645,23 +645,39 @@ class WafDetector:
                 },
             )
 
-        # Take best match
+        # Take best match.  _match_signatures returns plain dicts, so read
+        # defensively (dict key first, attribute as a fallback).
+        def pick(obj, *keys, default=None):
+            for key in keys:
+                if isinstance(obj, dict) and key in obj:
+                    return obj[key]
+                value = getattr(obj, key, None)
+                if value is not None:
+                    return value
+            return default
+
         best = matches[0]
-        bypasses = self._get_bypasses_for_waf(best.name)
+        best_name = pick(best, "name", default="unknown")
+        best_vendor = pick(best, "vendor", default="unknown")
+        best_confidence = pick(best, "confidence", default=0.8)
+        best_headers = pick(best, "matched_headers", "detect_headers", default=[]) or []
+        best_patterns = pick(best, "matched_patterns", "detect_body_patterns", default=[]) or []
+
+        bypasses = self._get_bypasses_for_waf(best_name)
         latency = max(xss_time - baseline_time, sqli_time - baseline_time, 0)
 
         return WafInfo(
             detected=True,
-            name=best.name,
-            vendor=best.vendor,
-            confidence=matches[0].confidence if hasattr(matches[0], 'confidence') else 0.8,
+            name=best_name,
+            vendor=best_vendor,
+            confidence=best_confidence,
             blocking_level=self._estimate_blocking_level(baseline, xss_probe, sqli_probe),
             latency_overhead_ms=latency,
-            matched_headers=best.detect_headers if hasattr(best, 'detect_headers') else [],
-            matched_patterns=best.detect_body_patterns if hasattr(best, 'detect_body_patterns') else [],
+            matched_headers=best_headers,
+            matched_patterns=best_patterns,
             bypasses=bypasses,
             raw={
-                "waf_name": best.name,
+                "waf_name": best_name,
                 "baseline_status": baseline.status,
                 "xss_blocked": self.http_pool.is_waf_block(xss_probe),
                 "sqli_blocked": self.http_pool.is_waf_block(sqli_probe),

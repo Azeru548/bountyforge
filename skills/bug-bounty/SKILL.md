@@ -1,6 +1,6 @@
 ---
 name: bug-bounty
-description: Complete bug bounty workflow — recon (subdomain enumeration, asset discovery, fingerprinting, HackerOne scope, source code audit), pre-hunt learning (disclosed reports, tech stack research, mind maps, threat modeling), vulnerability hunting (IDOR, SSRF, XSS, auth bypass, CSRF, race conditions, SQLi, XXE, file upload, business logic, GraphQL, HTTP smuggling, cache poisoning, OAuth, timing side-channels, OIDC, SSTI, subdomain takeover, cloud misconfig, ATO chains, agentic AI), LLM/AI security testing (chatbot IDOR, prompt injection, indirect injection, ASCII smuggling, exfil channels, RCE via code tools, system prompt extraction, ASI01-ASI10), A-to-B bug chaining (IDOR→auth bypass, SSRF→cloud metadata, XSS→ATO, open redirect→OAuth theft, S3→bundle→secret→OAuth), bypass tables (SSRF IP bypass, open redirect bypass, file upload bypass), language-specific grep (JS prototype pollution, Python pickle, PHP type juggling, Go template.HTML, Ruby YAML.load, Rust unwrap), and reporting (7-Question Gate, 4 validation gates, human-tone writing, templates by vuln class, CVSS 3.1, PoC generation, always-rejected list, conditional chain table, submission checklist). Use for ANY bug bounty task — starting a new target, doing recon, hunting specific vulns, auditing source code, testing AI features, validating findings, or writing reports. 中文触发词：漏洞赏金、安全测试、渗透测试、漏洞挖掘、信息收集、子域名枚举、XSS测试、SQL注入、SSRF、安全审计、漏洞报告
+description: Complete bug bounty workflow — recon (subdomains, asset discovery, fingerprinting, HackerOne scope, source audit), pre-hunt learning (disclosed reports), vulnerability hunting (IDOR, SSRF, XSS, auth bypass, CSRF, race conditions, SQLi, XXE, file upload, business logic, GraphQL, HTTP smuggling, cache poisoning, SSTI, subdomain takeover, cloud misconfig, ATO chains, agentic AI), LLM/AI security testing (prompt injection, indirect injection, ASCII smuggling, exfil channels, RCE via code tools, system prompt extraction, ASI01-ASI10), A-to-B bug chaining (IDOR→auth bypass, SSRF→cloud metadata, XSS→ATO, open redirect→OAuth theft), bypass tables, language-specific grep (prototype pollution, pickle, type juggling, template.HTML, unwrap), and reporting (7-Question Gate, 4 validation gates, human-tone writing, CVSS 3.1, PoC generation, submission checklist). Use for ANY bug bounty task — recon, specific vulns, source audit, AI testing, validation, reports. 中文触发词：漏洞赏金、安全测试、渗透测试、漏洞挖掘、信息收集、子域名枚举、XSS测试、SQL注入、SSRF、安全审计、漏洞报告
 ---
 
 # Bug Bounty Master Workflow
@@ -2289,19 +2289,18 @@ When payout is being downgraded, use these counters:
 
 ---
 
-# INSTALLATION (Claude Code Skill)
+# INSTALLATION (opencode)
 
-To use this as a Claude Code skill, copy this file to your skills directory:
+This skill ships with the BountyForge repo and is registered in `opencode.json`:
 
-```bash
-# Option A: Clone the repo and link the skill
-git clone https://github.com/shuvonsec/claude-bug-bounty.git ~/.claude/skills/bug-bounty
-ln -s ~/.claude/skills/bug-bounty/SKILL.md ~/.claude/skills/bug-bounty/SKILL.md
-
-# Option B: Direct copy
-mkdir -p ~/.claude/skills/bug-bounty
-curl -s https://raw.githubusercontent.com/shuvonsec/claude-bug-bounty/main/SKILL.md \
-  -o ~/.claude/skills/bug-bounty/SKILL.md
+```json
+{
+  "skills": { "paths": ["C:/Users/PC/bountyforge"] }
+}
 ```
 
-Then in Claude Code, this skill loads automatically when you ask about bug bounty, recon, or vulnerability hunting.
+opencode scans that path recursively for `**/SKILL.md`, so this skill loads at
+startup. To move the clone, update `skills.paths` to match.
+
+Then restart opencode — this skill triggers on any bug bounty, recon, or
+vulnerability hunting request.

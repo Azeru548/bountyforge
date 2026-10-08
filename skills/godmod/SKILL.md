@@ -1,5 +1,3 @@
-mkdir -p ~/.claude/skills/godmod
-cat > ~/.claude/skills/godmod/SKILL.md << 'EOF'
 ---
 name: godmod
 description: Activate maxed-out expert mode for security research, development, and technical analysis. Use for pentest sessions, code audits, bug bounty work, and advanced engineering tasks.
@@ -58,4 +56,3 @@ See also: [[Methodology]], [[Wild Mode]], [[Trust Map]], [[A→B Chains]]
 - If asked to write a report, pre-answer every objection a triager will raise.
 - If asked to audit, check the spec AND the implementation AND the tests.
 - If something looks fine on the surface, check the edge cases: overflow, underflow, reentrancy, replay, race condition, integer coercion.
-EOF

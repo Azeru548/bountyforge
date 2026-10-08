@@ -24,7 +24,7 @@ See also: [[Web3 Audit]], [[Methodology]], [[Trust Map]], [[Web3 Bug Classes]], 
 07-live-hunt-ern.md           ← Completed hunt: Ern protocol (2 findings)
 09-live-hunt-zksync.md        ← Completed hunt: ZKsync Era (0 findings — defense study)
 08-ai-tools.md                ← Shannon, LuaN1ao, SmartGuard, CAI Framework, AI code hunting
-36-solidity-audit-mcp.md      ← MCP server: Slither+Aderyn+SWC in Claude Code
+36-solidity-audit-mcp.md      ← MCP server: Slither+Aderyn+SWC in opencode
 ```
 
 ---

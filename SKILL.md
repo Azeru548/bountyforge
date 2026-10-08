@@ -40,6 +40,39 @@ Full detail: [[Methodology]]
 
 ---
 
+## Link Resolution
+
+This repo uses Obsidian-style `[[Wiki Link]]` shorthand. opencode does not
+resolve them — treat each one as a path relative to the repo root
+(`~/bountyforge`):
+
+| Link | Path |
+|------|------|
+| `[[BountyForge]]` | `SKILL.md` |
+| `[[Methodology]]` | `references/methodology.md` |
+| `[[3rd Eye]]` | `skills/bb-methodology/SKILL.md` |
+| `[[Trust Map]]`, `[[Vuln Classes]]`, `[[A→B Chains]]`, `[[Triage]]`, `[[Report Writing]]`, `[[Lead Ledger]]`, `[[Wild Mode]]`, `[[Index]]` | `wiki/<name>.md` |
+| `[[Web2 Recon]]` | `skills/web2-recon/SKILL.md` |
+| `[[Web3 Audit]]` | `skills/web3-audit/SKILL.md` |
+| `[[Smart Contract Audit]]` | `skills/smart-contract-audit/SKILL.md` |
+| `[[Security Arsenal]]` | `skills/security-arsenal/SKILL.md` |
+| `[[Code Sleuth]]` | `skills/code-sleuth/SKILL.md` |
+| `[[Fizz]]` | `skills/fizz/SKILL.md` |
+| `[[Pashov Solidity Auditor]]` | `skills/pashov/solidity-auditor/SKILL.md` |
+| `[[Pashov X-Ray]]` | `skills/pashov/x-ray/SKILL.md` |
+| `[[Meme Coin Audit]]` | `skills/meme-coin-audit/SKILL.md` |
+| `[[HackenProof Triage]]` | `skills/hackenproof-triage-marketplace/SKILL.md` |
+| `[[Web3 Bug Classes]]` … `[[Web3 Start Here]]` | `skills/web3/web3-<slug>/SKILL.md` |
+
+`[[Web3 AI Tools]]`, `[[Web3 Case Study]]`, `[[Web3 Grep Arsenal]]`,
+`[[Web3 Hunt Foundation]]`, `[[Web3 Hunt ZKsync]]`,
+`[[Web3 Methodology Research]]`, `[[Web3 POC Foundry]]`,
+`[[Web3 Solidity Audit MCP]]`, `[[Web3 Triage Report]]` all live under
+`skills/web3/`. When a link has no file, read the skill whose `name` matches
+the link text.
+
+---
+
 ## Wiki Index
 
 - [[Index]] — All pages and connections
